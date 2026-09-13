@@ -138,9 +138,9 @@ if st.button("Check Running Conditions", type="primary"):
 
             with st.spinner("Evaluating weather safety with AI..."):
                 try:
-                    # Initial completion call
+                    # Initial completion call using supported Groq model
                     response = client.chat.completions.create(
-                        model="llama-3.1-8b-instant",
+                        model="llama-3.3-70b-versatile",
                         messages=messages,
                         tools=tools,
                         tool_choice="auto"
@@ -165,7 +165,7 @@ if st.button("Check Running Conditions", type="primary"):
 
                         # Final completion call with tool data
                         final_response = client.chat.completions.create(
-                            model="llama-3.1-8b-instant",
+                            model="llama-3.3-70b-versatile",
                             messages=messages
                         )
                         st.markdown(final_response.choices[0].message.content)
