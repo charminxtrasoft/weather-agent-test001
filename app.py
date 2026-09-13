@@ -1,16 +1,16 @@
 import json
 import requests
 import streamlit as st
-from openai import OpenAI
+from groq import Groq
 
 st.set_page_config(page_title="Run Weather AI Agent", page_icon="🏃")
 
 st.title("🏃 Running Weather Safety Agent")
 st.write("Check real-time weather safety and get your maximum run duration.")
 
-# Sidebar for API Key & Settings
+# Sidebar for Groq API Key & Settings
 with st.sidebar:
-    api_key = st.text_input("OpenAI API Key", type="password")
+    api_key = st.text_input("Groq API Key (Free)", type="password")
     workout_type = st.selectbox(
         "Workout Type",
         ["Easy Run", "Tempo / Workout", "Long Run", "Interval Training"]
@@ -47,9 +47,9 @@ location = st.text_input("Enter your city:", value="St. Charles")
 
 if st.button("Check Conditions"):
     if not api_key:
-        st.error("Please enter your OpenAI API key in the sidebar.")
+        st.error("Please enter your free Groq API key in the sidebar.")
     else:
-        client = OpenAI(api_key=api_key)
+        client = Groq(api_key=api_key)
         coords = geocode_city(location)
         
         if not coords:
@@ -86,7 +86,7 @@ if st.button("Check Conditions"):
 
             with st.spinner("Fetching weather and evaluating safety..."):
                 response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model="llama-3.3-70b-versatile",
                     messages=messages,
                     tools=tools
                 )
@@ -102,5 +102,8 @@ if st.button("Check Conditions"):
                             "content": weather_data
                         })
                     
-                    final = client.chat.completions.create(model="gpt-4o-mini", messages=messages)
+                    final = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
+                        messages=messages
+                    )
                     st.markdown(final.choices[0].message.content)
